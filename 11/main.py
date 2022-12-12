@@ -35,7 +35,7 @@ class Monkey:
             self._total_inspections += 1
 
             worrying_value = self._operation.apply(item)
-            new_item_value = worry_reducer(worrying_value, self._test_divisible_by)
+            new_item_value = worry_reducer(worrying_value)
             if new_item_value % self._test_divisible_by == 0:
                 other_monkeys[self._test_if_true].catch(new_item_value)
             else:
@@ -87,16 +87,15 @@ def run_puzzle(rounds, worry_reducer):
 
 
 def first_puzzle():
-    result = run_puzzle(20, lambda x, test_divisible_by: x // 3)
+    result = run_puzzle(20, lambda x: x // 3)
     print(f"Puzzle 1 Answer: {result}")
 
 
 def second_puzzle():
-    result = run_puzzle(10000,
-                        lambda x, test_divisible_by: x % (5 * 17 * 7 * 13 * 19 * 3 * 11 * 2))  # monkey divisible tests
+    result = run_puzzle(10000, lambda x: x % (5 * 17 * 7 * 13 * 19 * 3 * 11 * 2))  # monkey divisible tests
     print(f"Puzzle 2 Answer: {result}")
 
 
 if __name__ == "__main__":
-    first_puzzle()
-    second_puzzle()
+    first_puzzle()  # Puzzle 1 Answer: 54054
+    second_puzzle()  # Puzzle 2 Answer: 14314925001
