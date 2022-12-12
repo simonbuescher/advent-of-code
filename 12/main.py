@@ -1,17 +1,4 @@
-import math
-
-
-class HeightMap:
-    HEIGHT_MAP = "abcdefghijklmnopqrstuvwxyz"
-
-    @staticmethod
-    def get_height(value):
-        if value == "S":
-            return 0
-        elif value == "E":
-            return 25
-        else:
-            return HeightMap.HEIGHT_MAP.index(value)
+HEIGHT_MAP = "abcdefghijklmnopqrstuvwxyz"
 
 
 class Grid:
@@ -21,49 +8,39 @@ class Grid:
         self._height = height
 
         self._start = self._get_pos("S")
-        self._start_height = 0
         self._goal = self._get_pos("E")
-        self._goal_height = 25
 
-    def a_star_all(self):
-        starting_positions = [self._to_pos(index) for index, letter in enumerate(self._grid) if
-                              letter == 'a' or letter == 'S']
+    def search_all(self):
+        starting_positions = [
+            self._to_pos(index) for index, letter in enumerate(self._grid) if letter == 'a' or letter == 'S'
+        ]
 
         results = []
         for i, pos in enumerate(starting_positions):
-            print(f"Evaluating {i}/{len(starting_positions)}", end="\r")
             try:
                 self._start = pos
-                path = self.a_star()
+                path = self.breadth_first_search()
                 results.append((pos, path))
             except ValueError:
                 continue
 
         return results
 
-    def a_star(self):
-        open_set = {self._start}
+    def breadth_first_search(self):
+        open_set = [self._start]
+        visited = {self._start}
         came_from = {}
-        g_score = {self._start: 0}
-        f_score = {self._start: self._h(self._start)}
 
         while open_set:
-            current = min(open_set, key=lambda n: f_score[n] if n in f_score else float("inf"))
+            current = open_set.pop(0)
             if current == self._goal:
                 return self._reconstruct_path(came_from)
 
-            open_set.remove(current)
-            neighbors = self._get_neighbors(current)
-            for neighbor in neighbors:
-                d = 1  # entfernung zwischen current und neighbor (immer 1 in unserem grid)
-                tentative_g_score = g_score[current] + d
-
-                if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
-                    came_from.update({neighbor: current})
-                    g_score[neighbor] = tentative_g_score
-                    f_score[neighbor] = tentative_g_score + self._h(neighbor)
-                    if neighbor not in open_set:
-                        open_set.add(neighbor)
+            for neighbor in self._get_neighbors(current):
+                if neighbor not in visited:
+                    came_from[neighbor] = current
+                    visited.add(neighbor)
+                    open_set.append(neighbor)
 
         raise ValueError("No path found")
 
@@ -75,12 +52,6 @@ class Grid:
             path.append((current, self._get(current)))
 
         return list(reversed(path))
-
-    def _h(self, point):
-        x1 = math.pow(self._goal[0] - point[0], 2)
-        x2 = math.pow(self._goal[1] - point[1], 2)
-        x3 = math.pow(self._goal_height - self._get_height(point), 2)
-        return math.sqrt(x1 + x2 + x3)
 
     def _get_neighbors(self, point):
         x, y = point
@@ -100,14 +71,17 @@ class Grid:
             # entfernung nach unten ist egal, entfernung nach oben max 1
             return cur_height >= p_height or p_height - cur_height <= 1
 
-        return [(_x, _y) for _x, _y in neighbors if in_range((_x, _y)) and max_height_dist((_x, _y))]
+        return [neighbor for neighbor in neighbors if in_range(neighbor) and max_height_dist(neighbor)]
 
     def _get(self, point):
         x, y = point
         return self._grid[y * self._width + x]
 
     def _get_height(self, point):
-        return HeightMap.get_height(self._get(point))
+        value = self._get(point)
+        value = "a" if value == "S" else value
+        value = "z" if value == "E" else value
+        return HEIGHT_MAP.index(value)
 
     def _get_pos(self, value):
         index = self._grid.index(value)
@@ -129,19 +103,19 @@ def parse_puzzle_input():
 
 def first_puzzle():
     grid = parse_puzzle_input()
-    path = grid.a_star()
+    path = grid.breadth_first_search()
     result = len(path) - 1
     print(f"Puzzle 1 Answer: {result}")
 
 
 def second_puzzle():
     grid = parse_puzzle_input()
-    results = grid.a_star_all()
+    results = grid.search_all()
 
     result = len(min(results, key=lambda res: len(res[1]))[1]) - 1
     print(f"Puzzle 2 Answer: {result}")
 
 
 if __name__ == "__main__":
-    first_puzzle()
-    second_puzzle()
+    first_puzzle()  # Puzzle 1 Answer: 447
+    second_puzzle()  # Puzzle 2 Answer: 446
