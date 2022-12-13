@@ -1,3 +1,4 @@
+import ast
 import functools
 
 
@@ -6,55 +7,38 @@ def parse_puzzle_input():
         content = file.read().strip()
 
     pairs = [pair.split("\n") for pair in content.split("\n\n")]
-    return [(eval(left), eval(right)) for left, right in pairs]
+    return [(ast.literal_eval(left), ast.literal_eval(right)) for left, right in pairs]
 
 
 def compare_ints(left, right):
-    diff = left - right
-    return diff // (abs(diff) if diff else 1)
+    return left - right
 
 
 def compare_lists(left, right):
-    if isinstance(left, list) and not isinstance(right, list):
-        right = [right]
-    elif not isinstance(left, list) and isinstance(right, list):
-        left = [left]
+    left = [left] if not isinstance(left, list) else left
+    right = [right] if not isinstance(right, list) else right
 
-    zipped_list = list(zip(left, right))
-    for l, r in zipped_list:
-        if isinstance(l, list) or isinstance(r, list):
-            compare_result = compare_lists(l, r)
+    for left_item, right_item in zip(left, right):
+        if isinstance(left_item, list) or isinstance(right_item, list):
+            compare_result = compare_lists(left_item, right_item)
         else:
-            compare_result = compare_ints(l, r)
+            compare_result = compare_ints(left_item, right_item)
 
         if compare_result != 0:
             return compare_result
     else:
-        if len(left) == len(right) == len(zipped_list):
-            return 0
-        elif len(left) == len(zipped_list):
-            return -1
-        else:
-            return 1
+        return compare_ints(len(left), len(right))
 
 
 def first_puzzle():
     pairs = parse_puzzle_input()
-
-    correct_ordered_pairs = []
-    for i, (left, right) in enumerate(pairs, start=1):
-        compare_result = compare_lists(left, right)
-        if compare_result == -1:
-            correct_ordered_pairs.append(i)
-
-    result = sum(correct_ordered_pairs)
+    result = sum(i for i, (left, right) in enumerate(pairs, start=1) if compare_lists(left, right) < 0)
     print(f"Puzzle 1 Answer: {result}")
 
 
 def second_puzzle():
     pairs = parse_puzzle_input()
-    items = [item for pair in pairs for item in pair]
-    items.extend([[[2]], [[6]]])
+    items = [item for pair in pairs for item in pair] + [[[2]], [[6]]]
 
     items.sort(key=functools.cmp_to_key(compare_lists))
 
