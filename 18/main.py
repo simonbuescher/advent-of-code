@@ -13,52 +13,65 @@ def get_neighbors(cube):
     ]
 
 
-def is_outside_of_grid(cube, mins, maxs):
-    return any((
-        not (mins[0] <= cube[0] <= maxs[0]),
-        not (mins[1] <= cube[1] <= maxs[1]),
-        not (mins[2] <= cube[2] <= maxs[2]),
-    ))
+class Control:
+    def __init__(self, cubes):
+        self._cubes = cubes
+        self._mins = min(cube[0] for cube in cubes), min(cube[1] for cube in cubes), min(cube[2] for cube in cubes)
+        self._maxs = max(cube[0] for cube in cubes), max(cube[1] for cube in cubes), max(cube[2] for cube in cubes)
 
+        self._no_outside_connection = set()
+        self._outside_connection = set()
 
-def has_outside_connection(cube, cubes, mins, maxs):
-    if cube in cubes:
+    def has_outside_connection(self, cube):
+        if cube in self._cubes:
+            return False
+
+        return self._bfs(cube)
+
+    def _bfs(self, cube):
+        open_set = [cube]
+        visited = set()
+        while open_set:
+            current = open_set.pop(0)
+            if current in self._outside_connection:
+                return True
+            elif current in self._no_outside_connection:
+                return False
+
+            if self._is_outside_of_grid(current):
+                self._outside_connection.update(visited)
+                return True
+
+            visited.add(current)
+            for neighbor in get_neighbors(current):
+                if neighbor in self._cubes or neighbor in visited or neighbor in open_set:
+                    continue
+
+                open_set.append(neighbor)
+
+        self._no_outside_connection.update(visited)
         return False
 
-    open_set = [cube]
-    visited = set()
-    while open_set:
-        current = open_set.pop(0)
-        if is_outside_of_grid(current, mins, maxs):
-            return True
-
-        visited.add(current)
-        for neighbor in get_neighbors(current):
-            if neighbor in cubes or neighbor in visited or neighbor in open_set:
-                continue
-
-            open_set.append(neighbor)
-
-    return False
+    def _is_outside_of_grid(self, cube):
+        return any((
+            not (self._mins[0] <= cube[0] <= self._maxs[0]),
+            not (self._mins[1] <= cube[1] <= self._maxs[1]),
+            not (self._mins[2] <= cube[2] <= self._maxs[2]),
+        ))
 
 
 def first_puzzle():
     cubes = parse_puzzle_input()
 
     visible_sides = sum((neighbor not in cubes) for cube in cubes for neighbor in get_neighbors(cube))
-
     print(f"Puzzle 1 Answer: {visible_sides}")
 
 
 def second_puzzle():
     cubes = parse_puzzle_input()
+    control = Control(cubes)
 
-    mins = min(cube[0] for cube in cubes), min(cube[1] for cube in cubes), min(cube[2] for cube in cubes)
-    maxs = max(cube[0] for cube in cubes), max(cube[1] for cube in cubes), max(cube[2] for cube in cubes)
-    visible = sum(
-        has_outside_connection(neighbor, cubes, mins, maxs) for cube in cubes for neighbor in get_neighbors(cube)
-    )
-
+    visible = sum(control.has_outside_connection(neighbor) for cube in cubes for neighbor in get_neighbors(cube))
     print(f"Puzzle 2 Answer: {visible}")
 
 
