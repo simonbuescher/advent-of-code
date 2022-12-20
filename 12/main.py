@@ -68,7 +68,7 @@ class Grid:
         def max_height_dist(p1):
             cur_height = self._get_height(point)
             p_height = self._get_height(p1)
-            # entfernung nach unten ist egal, entfernung nach oben max 01
+            # entfernung nach unten ist egal, entfernung nach oben max 1
             return cur_height >= p_height or p_height - cur_height <= 1
 
         return [neighbor for neighbor in neighbors if in_range(neighbor) and max_height_dist(neighbor)]
@@ -117,5 +117,5 @@ def second_puzzle():
 
 
 if __name__ == "__main__":
-    first_puzzle()  # Puzzle 01 Answer: 447
-    second_puzzle()  # Puzzle 02 Answer: 446
+    first_puzzle()  # Puzzle 1 Answer: 447
+    second_puzzle()  # Puzzle 2 Answer: 446

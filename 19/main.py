@@ -81,7 +81,7 @@ def solve(robot_blueprints, start_minutes):
         # add "do nothing" as a next state
         new_score = score + robots[3]  # current score plus amount of geode robots
         new_minutes = minutes - 1
-        new_resources = add_tuple(resources, robots)  # every robot adds 01 resource
+        new_resources = add_tuple(resources, robots)  # every robot adds 1 resource
         open_set.append((new_score, new_minutes, robots, new_resources))
 
         # add "buy this robot" for every possible robot that we can afford as next states
@@ -119,5 +119,5 @@ def second_puzzle():
 
 
 if __name__ == "__main__":
-    first_puzzle()  # Puzzle 01 Answer: 1147
-    second_puzzle()  # Puzzle 02 Answer: 3080
+    first_puzzle()  # Puzzle 1 Answer: 1147
+    second_puzzle()  # Puzzle 2 Answer: 3080

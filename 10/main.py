@@ -135,7 +135,7 @@ def second_puzzle():
     evaluation = GraphicsEval()
     cpu = Cpu(instructions, evaluation)
 
-    print("Puzzle 02 Answer: ")
+    print("Puzzle 2 Answer: ")
     cpu.run()
 
 
