@@ -8,7 +8,7 @@ def parse_puzzle_input():
     flow_rate = {}
     edges = {}
 
-    matcher = re.compile(r".*(?P<valve>[A-Z]{2}).+(rate=(?P<flow>\d+)).*valve(s)?\s(?P<dest>[A-Z]{2}(,\s[A-Z]{2})*)")
+    matcher = re.compile(r".*(?P<valve>[A-Z]{02}).+(rate=(?P<flow>\d+)).*valve(s)?\s(?P<dest>[A-Z]{02}(,\s[A-Z]{02})*)")
     for line in content.split("\n"):
         match = matcher.match(line)
         valve, flow, dest = match.group("valve"), match.group("flow"), match.group("dest")
@@ -117,9 +117,9 @@ def second_puzzle():
                 new_state = (minutes + 1, option, elph_option, tuple(opened_valves), new_score)
                 states.append(new_state)
 
-    print(f"Puzzle 2 Answer: {best}")
+    print(f"Puzzle 02 Answer: {best}")
 
 
 if __name__ == "__main__":
-    first_puzzle()  # Puzzle 1 Answer: 2114
-    second_puzzle()  # Puzzle 2 Answer: 2666
+    first_puzzle()  # Puzzle 01 Answer: 2114
+    second_puzzle()  # Puzzle 02 Answer: 2666

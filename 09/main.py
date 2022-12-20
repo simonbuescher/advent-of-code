@@ -81,5 +81,5 @@ def second_puzzle():
 
 
 if __name__ == "__main__":
-    first_puzzle()  # Puzzle 1 Answer: 5683
-    second_puzzle()  # Puzzle 2 Answer: 2372
+    first_puzzle()  # Puzzle 01 Answer: 5683
+    second_puzzle()  # Puzzle 02 Answer: 2372
