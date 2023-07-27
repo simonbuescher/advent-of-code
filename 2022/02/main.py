@@ -1,44 +1,66 @@
-import functools
-import math
+GAME_LOOKUP = {
+    "A": {
+        "X": 1 + 3,
+        "Y": 2 + 6,
+        "Z": 3 + 0
+    },
+    "B": {
+        "X": 1 + 0,
+        "Y": 2 + 3,
+        "Z": 3 + 6
+    },
+    "C": {
+        "X": 1 + 6,
+        "Y": 2 + 0,
+        "Z": 3 + 3
+    },
+}
 
-
-def parse_puzzle_input():
-    def to_tuple(line):
-        command, x = tuple(line.split())
-        if command == "forward":
-            return int(x), 0
-        if command == "down":
-            return 0, int(x)
-        if command == "up":
-            return 0, int(x) * -1
-        raise ValueError(f"unknown command '{line}'")
-
-    with open("input.txt", "r") as file:
-        return [to_tuple(l) for l in file.readlines()]
+# x = loose, y = draw, z = win
+CHOICE_LOOKUP = {
+    "A": {
+        "X": "Z",
+        "Y": "X",
+        "Z": "Y"
+    },
+    "B": {
+        "X": "X",
+        "Y": "Y",
+        "Z": "Z"
+    },
+    "C": {
+        "X": "Y",
+        "Y": "Z",
+        "Z": "X"
+    },
+}
 
 
 def first_puzzle():
-    def move(a, b):
-        return a[0] + b[0], a[1] + b[1]
+    with open("input.txt", "r") as file:
+        puzzle_input = file.read().strip()
 
-    commands = parse_puzzle_input()
-    result = math.prod(functools.reduce(move, commands, (0, 0)))
-    print("Puzzle 1 Answer: ", result)
+    def get_game_points(line):
+        enemy_choice, my_choice = line.split(" ")
+        return GAME_LOOKUP[enemy_choice][my_choice]
+
+    total = sum(get_game_points(line) for line in puzzle_input.split("\n"))
+    print(f"Puzzle 1 Anwser: {total}")
 
 
 def second_puzzle():
-    def move(current, command):
-        pos, depth, aim = current
-        forward, down = command
+    with open("input.txt", "r") as file:
+        puzzle_input = file.read().strip()
 
-        return pos + forward, depth + (forward * aim), aim + down
+    def get_game_points(line):
+        enemy_choice, result = line.split(" ")
+        my_choice = CHOICE_LOOKUP[enemy_choice][result]
+        return GAME_LOOKUP[enemy_choice][my_choice]
 
-    commands = parse_puzzle_input()
-    final = functools.reduce(move, commands, (0, 0, 0))
-    result = final[0] * final[1]
-    print("Puzzle 2 Answer: ", result)
+    total = sum(get_game_points(line) for line in puzzle_input.split("\n"))
+    print(f"Puzzle 2 Answer: {total}")
 
 
 if __name__ == "__main__":
-    first_puzzle()  # Puzzle 1 Answer: 2019945
-    second_puzzle()  # Puzzle 2 Answer: 1599311480
+    first_puzzle()
+    second_puzzle()

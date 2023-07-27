@@ -1,24 +1,26 @@
-def parse_puzzle_input():
-    with open("input.txt", "r") as file:
-        return [int(line.strip()) for line in file.readlines()]
+SPLIT_CHAR = "\n"
 
 
 def first_puzzle():
-    numbers = parse_puzzle_input()
-    result = sum(a < b for (a, b) in zip(numbers, numbers[1:]))
-    print("Puzzle 1 Answer: ", result)
+    with open("input.txt", "r") as input_file:
+        puzzle_input = input_file.read()
+
+    elf_strings = [c.split(SPLIT_CHAR) for c in puzzle_input.split(SPLIT_CHAR + SPLIT_CHAR)]
+    elf_totals = [sum(int(s) for s in es if s) for es in elf_strings]
+    print(f"Answer 1. Puzzle: {max(elf_totals)}")
 
 
 def second_puzzle():
-    numbers = parse_puzzle_input()
+    with open("input.txt", "r") as input_file:
+        puzzle_input = input_file.read()
 
-    def create_tuples(offset):
-        return zip(numbers[offset:], numbers[offset + 1:], numbers[offset + 2:])
-
-    result = sum(sum(a) < sum(b) for (a, b) in zip(create_tuples(0), create_tuples(1)))
-    print("Puzzle 2 Answer: ", result)
+    elf_strings = [c.split(SPLIT_CHAR) for c in puzzle_input.split(SPLIT_CHAR + SPLIT_CHAR)]
+    elf_totals = [sum(int(s) for s in es if s) for es in elf_strings]
+    elf_totals_sorted = list(reversed(sorted(elf_totals)))
+    totals = elf_totals_sorted[0:3]
+    print(f"Answer 2. Puzzle: {sum(totals)}")
 
 
 if __name__ == "__main__":
-    first_puzzle()  # Puzzle 1 Answer:  1215
-    second_puzzle()  # Puzzle 2 Answer:  1150
+    first_puzzle()
+    second_puzzle()
