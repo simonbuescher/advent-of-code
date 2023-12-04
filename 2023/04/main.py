@@ -1,8 +1,8 @@
 import math
 
 
-def to_int_list(str_list):
-    return [int(n) for n in str_list.split()]
+def to_int_set(str_list):
+    return {int(n) for n in str_list.split()}
 
 
 def get_puzzle_input():
@@ -11,14 +11,14 @@ def get_puzzle_input():
 
     strings = [line.split(": ") for line in content]
     return {
-        int(game_str.split()[1]): (to_int_list(numbers_str.split(" | ")[0]), to_int_list(numbers_str.split(" | ")[1]))
+        int(game_str.split()[1]): (to_int_set(numbers_str.split(" | ")[0]), to_int_set(numbers_str.split(" | ")[1]))
         for game_str, numbers_str in strings
     }
 
 
 def first_puzzle():
     games = get_puzzle_input()
-    amount_winning_numbers = [len(set(winning_numbers) & set(my_numbers)) for winning_numbers, my_numbers in games.values()]
+    amount_winning_numbers = [len(winning_numbers & my_numbers) for winning_numbers, my_numbers in games.values()]
     points = [int(math.pow(2, x - 1)) for x in amount_winning_numbers if x > 0]
     result = sum(points)
     print(f"Puzzle 1: {result}")
@@ -31,7 +31,7 @@ def second_puzzle():
     current = 0
     while current < len(results):
         game_id, (winning_numbers, my_numbers) = results[current]
-        amount_winning = len(set(winning_numbers) & set(my_numbers))
+        amount_winning = len(winning_numbers & my_numbers)
 
         for i in range(game_id + 1, game_id + amount_winning + 1):
             copy_card = games.get(i, None)
