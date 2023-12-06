@@ -10,7 +10,6 @@ def get_puzzle_input():
 
 def first_puzzle():
     times, distances = get_puzzle_input()
-
     results = [(sum(((time - x) * x) > goal for x in range(time))) for time, goal in zip(times, distances)]
     result = math.prod(results)
     print(f"Puzzle 1: {result}")
@@ -22,10 +21,10 @@ def second_puzzle():
     time = int("".join(str(i) for i in times))
     goal = int("".join(str(i) for i in distances))
 
-    x_low = (time - math.sqrt(math.pow(time, 2) - (4 * goal))) // 2
-    x_high = (time + math.sqrt(math.pow(time, 2) - (4 * goal))) // 2
+    x_low = math.ceil((time / 2) - math.sqrt(math.pow((time * -1) / 2, 2) - goal))
+    x_high = math.floor((time / 2) + math.sqrt(math.pow((time * -1) / 2, 2) - goal))
 
-    result = int(x_high - x_low)
+    result = (x_high - x_low) + 1
     print(f"Puzzle 2: {result}")
 
 
