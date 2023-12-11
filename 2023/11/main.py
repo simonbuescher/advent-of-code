@@ -7,7 +7,7 @@ def get_puzzle_input():
 
 
 def get_galaxies(grid):
-    return [(i, pos) for i, pos in enumerate((x, y) for y in range(len(grid)) for x in range(len(grid[0])) if grid[y][x] == "#")]
+    return [(x, y) for y in range(len(grid)) for x in range(len(grid[0])) if grid[y][x] == "#"]
 
 
 def get_empty(grid):
@@ -17,26 +17,25 @@ def get_empty(grid):
 
 
 def dist(a, b):
-    ax, ay = a
-    bx, by = b
+    (ax, ay), (bx, by) = a, b
     return abs(ax - bx) + abs(ay - by)
 
 
 def crossed_empties(a, b, empty_rows, empty_cols):
-    ax, ay = a
-    bx, by = b
-    return len(set(range(min(ax, bx), max(ax, bx))) & empty_cols) + len(set(range(min(ay, by), max(ay, by))) & empty_rows)
+    (ax, ay), (bx, by) = a, b
+    crossed_cols = set(range(min(ax, bx), max(ax, bx)))
+    crossed_rows = set(range(min(ay, by), max(ay, by)))
+    return len(crossed_cols & empty_cols) + len(crossed_rows & empty_rows)
 
 
 def run(expand):
     grid = get_puzzle_input()
     galaxies = get_galaxies(grid)
-
     empty_rows, empty_cols = get_empty(grid)
 
     return sum(
         dist(pos_a, pos_b) + (crossed_empties(pos_a, pos_b, empty_rows, empty_cols) * (expand - 1))
-        for (_, pos_a), (_, pos_b) in itertools.combinations(galaxies, 2)
+        for pos_a, pos_b in itertools.combinations(galaxies, 2)
     )
 
 
