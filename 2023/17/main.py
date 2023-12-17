@@ -58,8 +58,7 @@ def run(neighbors_func, target_reached, calc_dist):
     distances = defaultdict(lambda: math.inf)
 
     while open_set:
-        current = open_set.pop(0)
-        pos, dist, direction, steps = current
+        pos, dist, direction, steps = open_set.pop(0)
 
         if target_reached(pos, steps):
             return calc_dist(dist, pos, grid)
@@ -81,7 +80,7 @@ def first_puzzle():
 def second_puzzle():
     result = run(
         ultra_neighbors,
-        lambda pos, steps: pos in ((gx - 5, gy - 1), (gx - 1, gy - 5)),
+        lambda pos, steps: pos in ((gx - 5, gy - 1), (gx - 1, gy - 5)) and steps <= 6,
         lambda dist, pos, grid: dist + sum(grid[y][x] for y in range(pos[1], gy) for x in range(pos[0], gx) if (x, y) != pos)
     )
     print(f"Puzzle 2: {result}")
