@@ -34,6 +34,7 @@ def find_area(commands):
 
 
 def shoelace(points):
+    # https://en.wikipedia.org/wiki/Shoelace_formula
     return int(0.5 * sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(points, points[1:])))
 
 
