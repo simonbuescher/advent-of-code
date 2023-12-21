@@ -51,7 +51,7 @@ def second_puzzle():
     first_layer = [search(rocks, start_pos, gx + gx // 2 - 1) for start_pos in ((0, 0), (gx - 1, 0), (gx - 1, gy - 1), (0, gy - 1))]
     second_layer = [search(rocks, start_pos, gx // 2 - 1) for start_pos in ((0, 0), (gx - 1, 0), (gx - 1, gy - 1), (0, gy - 1))]
 
-    result = diamond_size + sum(directions) + sum((r - 1) * n for n in first_layer) + sum(r * n for n in second_layer)
+    result = diamond_size + sum(directions) + sum((r - 1) * v for v in first_layer) + sum(r * v for v in second_layer)
     print(f"Puzzle 2: {result}")
 
 
