@@ -1,7 +1,7 @@
 def get_puzzle_input():
     with open("input.txt", "r") as file:
         return zip(*[tuple(int(i) for i in line.split()) for line in file.readlines()])
-    
+
 
 def first_puzzle():
     first, second = get_puzzle_input()
@@ -16,5 +16,5 @@ def second_puzzle():
 
 
 if __name__ == "__main__":
-    first_puzzle()
-    second_puzzle()
+    first_puzzle()  # Puzzle 1: 3714264
+    second_puzzle()  # Puzzle 2: 18805872
