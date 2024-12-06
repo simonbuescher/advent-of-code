@@ -20,11 +20,11 @@ def tadd(a, b):
     return a[0] + b[0], a[1] + b[1]
 
 
-def run(obstacles, guard):
+def walk(obstacles, guard):
     current = guard
     direction = (0, -1)
 
-    visited = {guard}
+    visited = {current}
     direction_on_visit = defaultdict(list, {current: [direction]})
 
     while 0 <= current[0] < width and 0 <= current[1] < height:
@@ -41,18 +41,22 @@ def run(obstacles, guard):
         visited.add(current)
         direction_on_visit[current].append(direction)
 
-    return False, len(visited) - 1
+    return False, visited ^ {current}
 
 
 def first_puzzle():
     obstacles, guard = get_puzzle_input()
-    _, result = run(obstacles, guard)
-    print("Puzzle 1:", result)
+    _, visited = walk(obstacles, guard)
+    print("Puzzle 1:", len(visited))
 
 
 def second_puzzle():
     obstacles, guard = get_puzzle_input()
-    result = sum(run(obstacles | {(x, y)}, guard)[0] for x in range(width) for y in range(height))
+
+    # putting a new obstacle in every visited position of the normal path
+    _, visited = walk(obstacles, guard)
+    result = sum(walk(obstacles | {pos}, guard)[0] for pos in visited ^ {guard})
+
     print("Puzzle 2:", result)
 
 
