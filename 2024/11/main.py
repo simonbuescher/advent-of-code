@@ -1,7 +1,5 @@
 import functools
 
-stone_map = {}
-
 
 def get_puzzle_input():
     with open("input.txt", "r") as file:
@@ -23,10 +21,7 @@ def size(stone, remaining):
     if remaining == 0:
         return 1
 
-    if stone not in stone_map:
-        stone_map[stone] = expand(stone)
-
-    return sum(size(child, remaining - 1) for child in stone_map[stone])
+    return sum(size(child, remaining - 1) for child in expand(stone))
 
 
 def run(iterations):
