@@ -9,6 +9,7 @@ def get_puzzle_input():
 def find_path(walls):
     open_set = [((0, 0), [(0, 0)])]
     visited = {(0, 0)}
+    walls = set(walls)
 
     while open_set:
         current, path = open_set.pop(0)
